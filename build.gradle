@@ -28,6 +28,12 @@ repositories {
 
 
 dependencies {
+	//web
 	compile('org.springframework.boot:spring-boot-starter-web')
+	//test
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	//mysql
+	runtime("mysql:mysql-connector-java")
+	//lombok
+	compile("org.projectlombok:lombok")
 }
