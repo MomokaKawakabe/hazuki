@@ -1,4 +1,4 @@
-package com.yinyin.hazuki.util;
+package com.yinyin.hazuki.config.bean;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
