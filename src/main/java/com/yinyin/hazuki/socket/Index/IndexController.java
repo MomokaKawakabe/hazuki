@@ -15,6 +15,6 @@ public class IndexController {
     @RequestMapping("/")
     public String index(HttpServletRequest request, HttpServletResponse response) {
 
-        return "If you see this page. Hazuki started!中文！";
+        return "If you see this page. Hazuki started!";
     }
 }

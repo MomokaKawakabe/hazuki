@@ -2,6 +2,8 @@ package com.yinyin.hazuki.config;
 
 import com.yinyin.hazuki.config.interceptor.AllowCrossInterceptor;
 import com.yinyin.hazuki.config.interceptor.BrowserInterceptor;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,9 +16,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableWebMvc
 public class ServerConfiguration extends WebMvcConfigurerAdapter {
 
+    @Getter
+    @Value("${app.debug}")
+    private boolean debug;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AllowCrossInterceptor());//跨域和忽略OPTIONS
+        if(debug) {
+            registry.addInterceptor(new AllowCrossInterceptor());//跨域和忽略OPTIONS
+        }
         registry.addInterceptor(new BrowserInterceptor());//浏览器请求预处理
     }
 

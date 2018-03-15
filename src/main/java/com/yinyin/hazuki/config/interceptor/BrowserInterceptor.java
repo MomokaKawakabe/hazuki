@@ -24,10 +24,12 @@ public class BrowserInterceptor implements HandlerInterceptor {
         log.info("IP = " + ip + ";URL = " + url + " start access!");
 
         Set<String> paths = new HashSet<>();
-        paths.add("/");
+        //paths.add("/");
         String header = request.getHeader("Accept");
+        //如果是浏览器请求且不在列表中，则跳转到404
         if (header.contains("text/html") && !paths.contains(url)) {
             log.info("One may be intercepted by an illegal request from a browser!URL=" + url + ";IP=" + ip);
+            response.sendRedirect("/404");
             return false;//404
         }
         return true;
