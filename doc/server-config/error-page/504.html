@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>Temporarily Unavailable</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <style type="text/css">
+            /*<![CDATA[*/
+            body {
+                background-color: #fff;
+                color: #000;
+                font-size: 0.9em;
+                font-family: sans-serif,helvetica;
+                margin: 0;
+                padding: 0;
+            }
+            :link {
+                color: #c00;
+            }
+            a:hover {
+                color: #f50;
+            }
+            h1 {
+                text-align: center;
+                margin: 0;
+                padding: 0.6em 2em 0.4em;
+                background-color: #294172;
+                color: #fff;
+                font-weight: normal;
+                font-size: 1.75em;
+                border-bottom: 2px solid #000;
+            }
+            h1 strong {
+                font-weight: bold;
+                font-size: 1.5em;
+            }
+            h2 {
+                text-align: center;
+                background-color: #3C6EB4;
+                font-size: 1.1em;
+                font-weight: bold;
+                color: #fff;
+                margin: 0;
+                padding: 0.5em;
+                border-bottom: 2px solid #294172;
+            }
+            hr {
+                display: none;
+            }
+            .content {
+                padding: 1em 5em;
+            }
+            .alert {
+                border: 2px solid #000;
+            }
+
+            img {
+                border: 2px solid #fff;
+                padding: 2px;
+                margin: 2px;
+            }
+            a:hover img {
+                border: 2px solid #294172;
+            }
+            .logos {
+                margin: 1em;
+                text-align: center;
+            }
+            h3 {
+                text-align: center;
+                background-color: #ff0000;
+                padding: 0.5em;
+                color: #fff;
+            }
+            footer{
+                width: 100%;
+                text-align: center;
+                margin: 0;
+                padding: 0.6em 2em 0.4em;
+                background-color: #19294a;
+                font-weight: normal;
+                font-size: 0.6em;
+                border-top: 2px solid #000;
+                position:absolute;
+                bottom:0;
+                left:0;
+            }
+            footer a:hover {
+                color: #009900;
+            }
+            footer a {
+                color: #fff;
+            }
+            /*]]>*/
+        </style>
+    </head>
+
+    <body>
+    <h1><strong>Temporarily Unavailable</strong></h1>
+
+    <div class="content">
+        <h3>The page you are looking for is temporarily unavailable.  Please try again later.</h3>
+
+        <div class="alert">
+            <h2>Website Administrator</h2>
+            <div class="content">
+                <p>Status Code： <span style="color: red">●</span> 504 Bad Gateway timeout</p>
+                <p>Your IP： <span id="ip">Loading...</span></p>
+                <p>Your Position： <span id="position">Loading...</span></p>
+                <p>Request URL： <span id="url"></span></p>
+                <p>Service ID： tokyo-s4ot </p>
+            </div>
+        </div>
+
+        <div class="logos">
+            <a href="http://nginx.net/"><img
+                    src="default-img/nginx-logo.png"
+                    alt="[ Powered by nginx ]"
+                    width="112" height="32" /></a>
+
+            <a href="http://fedoraproject.org/"><img
+                    src="default-img/poweredby.png"
+                    alt="[ Powered by Fedora ]"
+                    width="88" height="31" /></a>
+
+            <a href="https://www.linux.org/"><img
+                    src="default-img/linux-logo.jpg"
+                    alt="[ Powered by Fedora ]"
+                    width="97" height="32" /></a>
+
+            <a href="https://www.mysql.com/"><img
+                    src="default-img/mysql-logo.png"
+                    alt="[ Powered by Fedora ]"
+                    width="81" height="32" /></a>
+
+            <a href="https://www.aliyun.com/"><img
+                    src="default-img/aliyun-logo.jpg"
+                    alt="[ Powered by Fedora ]"
+                    width="99" height="32" /></a>
+
+            <a href="https://www.java.com/"><img
+                    src="default-img/java-logo.jpg"
+                    alt="[ Powered by Fedora ]"
+                    width="78" height="32" /></a>
+
+            <a href="https://github.com/eyebluecn/tank/"><img
+                    src="default-img/eveblue-logo.png"
+                    alt="[ Powered by Fedora ]"
+                    width="72" height="32" /></a>
+
+            <a href="https://git-scm.com/"><img
+                    src="default-img/git-logo.jpg"
+                    alt="[ Powered by Fedora ]"
+                    width="76" height="32" /></a>
+        </div>
+    </div>
+
+    <footer style=""><a href="http://nginx.net/">Powered by <strong>nginx</strong></a></footer>
+
+
+    <script type="text/javascript" src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
+    <script type="text/javascript">
+        document.getElementById("url").innerHTML=window.location.href;
+        document.getElementById("ip").innerHTML=returnCitySN.cip;
+        document.getElementById("position").innerHTML=returnCitySN.cname;
+    </script>
+
+    </body>
+</html>
