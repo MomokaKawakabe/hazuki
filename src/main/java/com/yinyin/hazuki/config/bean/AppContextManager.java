@@ -1,14 +1,21 @@
 package com.yinyin.hazuki.config.bean;
 
+import com.yinyin.hazuki.config.exception.NotFoundException;
+import com.yinyin.hazuki.config.exception.UtilException;
+import com.yinyin.hazuki.socket.base.BaseEntityDao;
+import com.yinyin.hazuki.socket.base.model.BaseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.ResolvableType;
 import org.springframework.stereotype.Service;
 
 /**
  * 一个用作搭建Spring Bean和非Spring Bean的桥梁
  */
 @Service
+@Slf4j
 public class AppContextManager implements ApplicationContextAware {
     private static ApplicationContext appCtx;
 
@@ -24,5 +31,58 @@ public class AppContextManager implements ApplicationContextAware {
 
     public static <T> T getBean(Class<T> requiredType) throws BeansException {
         return getAppContext().getBean(requiredType);
+    }
+
+    //检出一个指定类型的实例。考虑deleted字段。找不到抛异常。
+    public static <T extends BaseEntity> T check(Class<T> clazz, Long id) {
+        if (id == null) {
+            throw new UtilException("id必须指定");
+        }
+        BaseEntityDao<T> baseDao = getBaseEntityDao(clazz);
+        T entity = baseDao.findOne(id);
+
+        if (entity == null || entity.deleted) {
+            throw new NotFoundException("您访问的内容不存在或者已经被删除");
+        }
+
+        return entity;
+    }
+    //找出一个指定类型的实例。考虑deleted字段。找不到返回null
+    public static <T extends BaseEntity> T find(Class<T> clazz, Long id) {
+        if (id == null) {
+            return null;
+        }
+        BaseEntityDao<T> baseDao = getBaseEntityDao(clazz);
+        T entity = baseDao.findOne(id);
+        if (entity == null || entity.deleted) {
+            return null;
+        }
+        return entity;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends BaseEntity> BaseEntityDao<T> getBaseEntityDao(Class<T> clazz) {
+        if (clazz == null) {
+            throw new UtilException("clazz不能为空！");
+        }
+        return (BaseEntityDao<T>) getGenericBean(BaseEntityDao.class, clazz);
+    }
+
+    /**
+     * 获取带泛型的bean. 例如: CrudRepository<Article,Long> 那么传入参数：CrudRepository.class, Article.class, Long.class
+     */
+    public static Object getGenericBean(Class<?> sourceClass, Class<?>... generics) {
+        ResolvableType resolvableType = ResolvableType.forClassWithGenerics(sourceClass, generics);
+        if (resolvableType != null) {
+            String[] beanNames = AppContextManager.getAppContext().getBeanNamesForType(resolvableType);
+            if (beanNames != null) {
+                if (beanNames.length > 0 && beanNames[0] != null) {
+                    return AppContextManager.getAppContext().getBean(beanNames[0]);
+                } else {
+                    log.error("出现数组长度为0的情况了！");
+                }
+            }
+        }
+        throw new UtilException("不存在" + resolvableType.toString() + "的相关Bean,请及时排查错误！");
     }
 }
