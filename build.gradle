@@ -42,7 +42,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
     //hibernate
     compile("org.hibernate:hibernate-jpamodelgen")
-	//Encoder
+	//Encoder 但是会出现傻逼的权限控制，请手动关闭
 	compile("org.springframework.boot:spring-boot-starter-security")
     //Email
     compile('org.springframework:spring-context-support')
