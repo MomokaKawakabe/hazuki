@@ -19,15 +19,23 @@ public class BrowserInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+        //后台接口不缓存内容，否则IE会出现数据不更新的bug.
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+
         String url = request.getRequestURI();
         String ip = NetworkUtil.getIpAddress(request);
         log.info("IP = " + ip + ";URL = " + url + " start access!");
 
         Set<String> paths = new HashSet<>();
-        //paths.add("/");
+        paths.add("/404");
         String header = request.getHeader("Accept");
         //如果是浏览器请求且不在列表中，则跳转到404
         if (header.contains("text/html") && !paths.contains(url)) {
+            if(url.equals("/404")){
+                return false;//404
+            }
             log.info("One may be intercepted by an illegal request from a browser!URL=" + url + ";IP=" + ip);
             response.sendRedirect("/404");
             return false;//404

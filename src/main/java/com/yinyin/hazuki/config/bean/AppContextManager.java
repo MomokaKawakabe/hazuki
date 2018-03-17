@@ -3,6 +3,7 @@ package com.yinyin.hazuki.config.bean;
 import com.yinyin.hazuki.config.exception.NotFoundException;
 import com.yinyin.hazuki.config.exception.UtilException;
 import com.yinyin.hazuki.socket.base.BaseEntityDao;
+import com.yinyin.hazuki.socket.base.BaseEntityService;
 import com.yinyin.hazuki.socket.base.model.BaseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -84,5 +85,39 @@ public class AppContextManager implements ApplicationContextAware {
             }
         }
         throw new UtilException("不存在" + resolvableType.toString() + "的相关Bean,请及时排查错误！");
+    }
+
+    //检出一个指定类型的实例。不考虑deleted字段。找不到抛异常。
+    public static <T extends BaseEntity> T checkDeeply(Class<T> clazz, Long id) {
+        if (id == null) {
+            throw new UtilException("id必须指定");
+        }
+        BaseEntityDao<T> baseDao = getBaseEntityDao(clazz);
+        T entity = baseDao.findOne(id);
+        if (entity == null) {
+            throw new NotFoundException("您访问的内容不存在或者已经被删除");
+        }
+        return entity;
+    }
+
+    //找出一个指定类型的实例，不考虑deleted字段。找不到返回null
+    public static <T extends BaseEntity> T findDeeply(Class<T> clazz, Long id) {
+        if (id == null) {
+            return null;
+        }
+        BaseEntityDao<T> baseDao = getBaseEntityDao(clazz);
+        T entity = baseDao.findOne(id);
+        if (entity == null) {
+            return null;
+        }
+        return entity;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends BaseEntity> BaseEntityService<T> getBaseEntityService(Class<T> clazz) {
+        if (clazz == null) {
+            throw new UtilException("clazz不能为空！");
+        }
+        return (BaseEntityService<T>) getGenericBean(BaseEntityService.class, clazz);
     }
 }

@@ -22,7 +22,7 @@ import java.util.Date;
 @MappedSuperclass
 public class BaseEntity extends Base implements Serializable {
 
-    public final static String PREFIX = "hazuki";
+    public final static String PREFIX = "hazuki_";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
