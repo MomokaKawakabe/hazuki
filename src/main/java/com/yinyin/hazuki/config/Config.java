@@ -5,18 +5,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 顺便配置了web初始化的时候的工作。
- *
+ * 一些配置项
  */
 @Configuration
+@Getter
 public class Config {
 
-    @Getter
     @Value("${app.debug}")
-    private boolean debug;
+    private Boolean isDebug;
 
-    @Getter
     @Value("${app.version}")
     private String version;
+
+
 
 }

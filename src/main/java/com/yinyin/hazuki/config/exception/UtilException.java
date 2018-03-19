@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 @Data
 public class UtilException extends RuntimeException {
+
     private int code;
     private String message;
 
@@ -26,10 +27,10 @@ public class UtilException extends RuntimeException {
         this.message = throwable.getMessage();
     }
 
-
     public UtilException(int code, String message) {
         super(message);
         this.code = code;
         this.message = message;
     }
+
 }

@@ -4,25 +4,26 @@ import com.yinyin.hazuki.config.exception.LoginException;
 import com.yinyin.hazuki.config.exception.NotFoundException;
 import com.yinyin.hazuki.config.exception.UnauthorizedException;
 import com.yinyin.hazuki.config.exception.UtilException;
-import com.yinyin.hazuki.socket.base.BaseEntityService;
-import com.yinyin.hazuki.socket.base.WebResult;
-import com.yinyin.hazuki.socket.support.session.SupportSession;
-import com.yinyin.hazuki.socket.support.session.SupportSessionDao;
-import com.yinyin.hazuki.socket.user.feature.Feature;
-import com.yinyin.hazuki.socket.user.feature.FeatureType;
-import com.yinyin.hazuki.socket.user.model.User;
+import com.yinyin.hazuki.socket._base.BaseEntityService;
+import com.yinyin.hazuki.socket._base.WebResult;
+import com.yinyin.hazuki.socket._support.session.SupportSession;
+import com.yinyin.hazuki.socket._support.session.SupportSessionDao;
+import com.yinyin.hazuki.socket.tank.TankService;
+import com.yinyin.hazuki.socket._common.feature.Feature;
+import com.yinyin.hazuki.socket._common.feature.FeatureType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -32,8 +33,7 @@ public class UserService extends BaseEntityService<User> {
     UserDao userDao;
 
     @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-
+    TankService tankService;
 
     @Autowired
     SupportSessionDao supportSessionDao;
@@ -42,18 +42,31 @@ public class UserService extends BaseEntityService<User> {
         super(User.class);
     }
 
-    //做权限拦截。给AuthInterceptor使用。Hibernate Session必须通过@Transactional才可持久。
+    //获取用户详情
+    public User detail(String uuid) {
+        //准备用户详情。
+        User user = this.check(uuid);
+        user.setAvatar(tankService.find(user.getAvatarTankUuid()));
+        return user;
+    }
+
+    //做权限拦截的事情。主要给AuthInterceptor使用。Hibernate Session必须通过@Transactional才可持久。
     @Transactional
     public boolean doAuthIntercept(HttpServletRequest request, HttpServletResponse response, Object handler) {
         HandlerMethod handlerMethod = null;
-        try {
-            handlerMethod = (HandlerMethod) handler;
-        } catch (Exception e) {
-            throw new UtilException("转换HandlerMethod出错，请及时排查。");
+        if (handler instanceof ResourceHttpRequestHandler) {
+            //资源文件处理器的拦截
+            return true;
+        } else {
+            try {
+                handlerMethod = (HandlerMethod) handler;
+            } catch (Exception e) {
+                throw new UtilException("转换HandlerMethod出错，请及时排查。");
+            }
         }
         //系统自带的接口
         String requestURI = request.getRequestURI();
-        if (requestURI.equals("/error")) {
+        if ("/error".equals(requestURI)) {
             return true;
         }
         //验证用户的身份，是否已经登录了。
@@ -72,12 +85,16 @@ public class UserService extends BaseEntityService<User> {
             }
             if (authentication != null) {
                 request.getSession().setAttribute(WebResult.COOKIE_AUTHENTICATION, authentication);
-                SupportSession supportSession = supportSessionDao.findByAuthenticationAndDeleted(authentication, false);
-                if (supportSession != null) {
+                Optional<SupportSession> optionalSupportSession = supportSessionDao.findById(authentication);
+                //SupportSession supportSession = supportSessionDao.findOne(authentication);
+                if (optionalSupportSession.isPresent()) {
+                    SupportSession supportSession = optionalSupportSession.get();
                     if (supportSession.getExpireTime().getTime() > System.currentTimeMillis()) {
-                        Long userId = supportSession.getUserId();
-                        user = userDao.findOne(userId);
-                        if (user != null) {
+                        String userUuid = supportSession.getUserUuid();
+                        Optional<User> optionalUser = userDao.findById(userUuid);
+                        //user = userDao.findOne(userUuid);
+                        if (optionalUser.isPresent()) {
+                            user = optionalUser.get();
                             httpSession.setAttribute(User.TAG, user);
                             //更新该用户的登录信息
                             supportSession.setExpireTime(new Date(System.currentTimeMillis() + SupportSession.EXPIRY * 1000));

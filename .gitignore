@@ -9,23 +9,14 @@
 .project
 .settings
 .springBeans
+.sts4-cache
 
 ### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
-
-# IDEA artifacts and output dirs
-*.iml
-*.ipr
-*.iws
-.idea
 out
-test-output
-atlassian-ide-plugin.xml
-.gradletasknamecache
-*.doc
 
 ### NetBeans ###
 nbproject/private/
@@ -34,3 +25,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### ignore generated files ###
+generated

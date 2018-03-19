@@ -1,22 +1,19 @@
 buildscript {
 	ext {
-		springBootVersion = '1.5.11.BUILD-SNAPSHOT'
+		springBootVersion = '2.0.0.RELEASE'
 	}
 	repositories {
 		mavenCentral()
-		maven { url "https://repo.spring.io/snapshot" }
-		maven { url "https://repo.spring.io/milestone" }
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
-
 }
-
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 group = 'com.yinyin'
 version = '0.0.1-SNAPSHOT'
@@ -24,8 +21,6 @@ sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
-	maven { url "https://repo.spring.io/snapshot" }
-	maven { url "https://repo.spring.io/milestone" }
 }
 
 
@@ -42,9 +37,24 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
     //hibernate
     compile("org.hibernate:hibernate-jpamodelgen")
-	//Encoder 但是会出现傻逼的权限控制，请手动关闭
-	compile("org.springframework.boot:spring-boot-starter-security")
     //Email
     compile('org.springframework:spring-context-support')
     compile("com.sun.mail:javax.mail")
+    //用于tank下载上传
+    compile("org.apache.httpcomponents:httpclient")
+    //用于生成随机字符串
+    compile("org.apache.commons:commons-lang3")
+    //用于生成验证码
+    compile("com.github.cage:cage:1.0")
+}
+
+// generateMetaModel
+sourceSets {
+	generated.java.srcDirs = ['src/main/generated']
+}
+task generateMetaModel(type: JavaCompile, group: 'build') {
+	source = sourceSets.main.java
+	classpath = configurations.compile
+	options.compilerArgs = ["-proc:only"]
+	destinationDir = sourceSets.generated.java.srcDirs.iterator().next()
 }

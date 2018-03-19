@@ -21,5 +21,4 @@ public class NotFoundException extends RuntimeException {
         this.message = message;
     }
 
-
 }

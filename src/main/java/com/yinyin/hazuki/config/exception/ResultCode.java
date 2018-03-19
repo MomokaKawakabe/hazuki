@@ -33,4 +33,5 @@ public class ResultCode {
     public static final int SERVICE_TIME_OUT = -610;
     //通用的异常
     public static final int UTIL_EXCEPTION = -700;
+
 }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yinyin.hazuki.config.bean.AppContextManager;
 import com.yinyin.hazuki.config.exception.UtilException;
-import com.yinyin.hazuki.socket.base.model.BaseEntity;
+import com.yinyin.hazuki.socket._base.model.BaseEntity;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -13,13 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Json工具
- */
 @Slf4j
 public class JsonUtil {
 
-    //不知道有什么用
     public static <T> T toObject(String content, Class<T> clazz) {
         ObjectMapper mapper = AppContextManager.getBean(ObjectMapper.class);
         try {
@@ -38,7 +34,7 @@ public class JsonUtil {
         try {
             return objectMapper.readValue(jsonString, typeReference);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn(e.getMessage());
             throw new UtilException("信息有误，无法从字符串转成对象！");
         }
     }
@@ -61,14 +57,15 @@ public class JsonUtil {
         }, jsonString);
     }
 
+
     //检出一个指定类型的实例列表。找不到抛异常。ids为json字符串，例如[1,5]
     public static <T extends BaseEntity> List<T> checkList(Class<T> clazz, String idsString) {
         if (idsString == null) {
             throw new UtilException("id必须指定");
         }
-        List<Long> idList = toLongList(idsString);
+        List<String> idList = toStringList(idsString);
         List<T> entityList = new ArrayList<>();
-        for (Long id : idList) {
+        for (String id : idList) {
             T entity = AppContextManager.check(clazz, id);
             entityList.add(entity);
         }
@@ -82,11 +79,11 @@ public class JsonUtil {
         }
         ObjectMapper objectMapper = AppContextManager.getBean(ObjectMapper.class);
         TypeReference<List<Long>> longListTypeReference = new TypeReference<List<Long>>() {};
-        List<Long> idList;
+        List<String> idList;
         List<T> entityList = new ArrayList<>();
         try {
             idList = objectMapper.readValue(idsString, longListTypeReference);
-            for (Long tankId : idList) {
+            for (String tankId : idList) {
                 T entity = AppContextManager.find(clazz, tankId);
                 if (entity == null) {
                     return null;
@@ -110,12 +107,10 @@ public class JsonUtil {
             throw new UtilException("json字符串转换时出错！");
         }
     }
-
     //将一个对象转换成 Map<String,Object>
     public static Map<String, Object> toMap(Object obj) {
         ObjectMapper mapper = AppContextManager.getBean(ObjectMapper.class);
-        TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>() {
-        };
+        TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>() {};
         return mapper.convertValue(obj, typeReference);
     }
 

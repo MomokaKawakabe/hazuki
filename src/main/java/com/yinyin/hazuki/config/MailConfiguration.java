@@ -11,7 +11,6 @@ import java.util.Properties;
 
 /**
  * Configuration for email.
- *
  */
 @EnableConfigurationProperties(MailProperties.class)
 @Configuration
@@ -39,8 +38,6 @@ public class MailConfiguration {
 
         return mailSender;
     }
-
-
 
 
 }

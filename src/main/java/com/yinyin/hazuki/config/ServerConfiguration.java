@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
- * 超级配置Configuration
+ * 超级配置Configuration //TODO :Deprecated
  */
 @Configuration
 @EnableWebMvc
@@ -21,7 +21,7 @@ public class ServerConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        if(config.isDebug()) {
+        if(config.getIsDebug()) {
             registry.addInterceptor(new AllowCrossInterceptor());//跨域和忽略OPTIONS
         }
         registry.addInterceptor(new BrowserInterceptor());//浏览器请求预处理
